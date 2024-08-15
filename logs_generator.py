@@ -1,6 +1,6 @@
+import configparser
 import json
 import logging
-import configparser
 import os
 from random import choice, randint
 from time import sleep
@@ -9,10 +9,10 @@ from time import sleep
 def load_config(config_file="config.ini"):
     """
     Loads configuration from the specified .ini file.
-    
+
     Args:
         config_file (str): Path to the configuration file.
-    
+
     Returns:
         configparser.ConfigParser: The configuration parser object.
     """
@@ -24,7 +24,7 @@ def load_config(config_file="config.ini"):
 def setup_logging(log_folder, log_file, log_level):
     """
     Sets up the logging configuration.
-    
+
     Args:
         log_folder (str): Directory for the log file.
         log_file (str): Name of the log file.
@@ -46,11 +46,11 @@ def setup_logging(log_folder, log_file, log_level):
 def load_data(data_folder, json_file):
     """
     Loads sentence components from the JSON data file into lists.
-    
+
     Args:
         data_folder (str): Directory where the JSON file is located.
         json_file (str): Name of the JSON file.
-    
+
     Returns:
         tuple: (subjects, verbs, objects, adverbs) - Lists of sentence components.
     """
@@ -83,7 +83,6 @@ class RandomSentenceLogger:
         logging.debug,
         logging.error,
         logging.critical,
-        logging.fatal,
     ]
 
     def __init__(self, subjects, verbs, objects, adverbs):
@@ -92,10 +91,13 @@ class RandomSentenceLogger:
         self.objects = objects
         self.adverbs = adverbs
 
-    def generate_random_sentence(self):
+    def generate_random_sentence(self, random_number):
         """
-        Generates a random sentence with a random number.
-        
+        Generates a random sentence with the given random number.
+
+        Args:
+            random_number (int): The random number to include in the sentence.
+
         Returns:
             str: The generated random sentence.
         """
@@ -106,21 +108,22 @@ class RandomSentenceLogger:
         verb = choice(self.verbs)
         obj = choice(self.objects)
         adverb = choice(self.adverbs)
-        random_number = randint(1, 1_000_000)
 
         return f"{subject} {verb} {obj} {adverb}. ({random_number})"
 
     def log_random_message(self):
         """
-        Logs a randomly generated sentence to a random log level.
+        Logs a randomly generated sentence to all log levels with different random numbers.
         """
-        log_function = choice(self.LOG_LEVELS)
-        log_function(self.generate_random_sentence())
+        for log_function in self.LOG_LEVELS:
+            random_number = randint(1, 1_000_000)
+            message = self.generate_random_sentence(random_number)
+            log_function(message)
 
     def start_logging(self, interval):
         """
         Continuously generates and logs random sentences at the specified interval.
-        
+
         Args:
             interval (float): Time interval (in seconds) between logging messages.
         """
